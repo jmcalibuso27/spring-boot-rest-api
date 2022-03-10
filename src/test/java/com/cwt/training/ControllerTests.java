@@ -58,7 +58,8 @@ class ControllerTests {
 					.accept(MediaType.APPLICATION_JSON)
 				)
 			.andExpect(status().isCreated())
-			.andExpect(jsonPath("$.firstName").value(createDTO.getFirstName()));
+			.andExpect(jsonPath("$.firstName").value(createDTO.getFirstName()))
+			.andExpect(jsonPath("$.lastName").value(createDTO.getLastName()));
 	}
 	
 	@Test
