@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Copy to documents') {
             steps {
-                bat 'copy %WORKSPACE%\target\*.jar C:\Users\collabera\Documents'
+                bat 'copy %WORKSPACE%/target/*.jar C:/Users/collabera/Documents'
             }
         }
     }
