@@ -1,6 +1,7 @@
 package com.cwt.training.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerRepository.findAll()
 				.stream()
 				.map(c -> modelMapper.map(c, CustomerDTO.class))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	@Transactional
