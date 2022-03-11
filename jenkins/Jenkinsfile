@@ -29,7 +29,7 @@ pipeline {
     }
     post {
 	    always {
-	      bat 'curl -o C:\\Users\\collabera\\Documents\\jenkins-build-log.txt ${BUILD_URL}/consoleText'
+	      bat 'curl -o C:\\Users\\collabera\\Documents\\jenkins-build-log.txt %BUILD_URL%/consoleText'
 	    }
 	}
 }
