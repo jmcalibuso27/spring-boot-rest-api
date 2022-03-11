@@ -21,15 +21,10 @@ pipeline {
                 bat 'copy %WORKSPACE%\\target\\*.jar C:\\Users\\collabera\\Documents'
             }
         }
-        stage('Save logs') {
-            steps {
-                bat 'copy %WORKSPACE%\\target\\*.jar C:\\Users\\collabera\\Documents'
-            }
-        }
     }
     post {
 	    always {
-	      bat 'curl -o C:\\Users\\collabera\\Documents\\jenkins-build-log.txt %BUILD_URL%/consoleText'
+	      bat 'copy %JENKINS_HOME%\\jobs\\%JOB_NAME%\\builds\\%BUILD_NUMBER%\\log C:\\Users\\collabera\\Documents\\log.txt'
 	    }
 	}
 }
