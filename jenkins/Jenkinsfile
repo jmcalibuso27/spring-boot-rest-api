@@ -16,7 +16,7 @@ pipeline {
             agent any
             steps {
               echo 'Hello world'
-              sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=spring-boot-rest-api-test -Dsonar.host.url=http://localhost:9000 -Dsonar.login=c85bc0f5a2f3a483e8cf2042910036e132bd157b'
+              bat 'mvn clean verify sonar:sonar -Dsonar.projectKey=spring-boot-rest-api-test -Dsonar.host.url=http://localhost:9000 -Dsonar.login=c85bc0f5a2f3a483e8cf2042910036e132bd157b'
             }
           }
           stage("Quality Gate") {
