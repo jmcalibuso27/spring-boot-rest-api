@@ -14,21 +14,7 @@ pipeline {
         }
         stage('build && SonarQube analysis') {
             steps {
-                withSonarQubeEnv('sonar') {
-                    // Optionally use a Maven environment you've configured already
-                    withMaven(maven:'Maven 3.5') {
-                        sh 'mvn clean package sonar:sonar'
-                    }
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
+            	sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=spring-boot-rest-api-test -Dsonar.host.url=http://localhost:9000 -Dsonar.login=c85bc0f5a2f3a483e8cf2042910036e132bd157b'
             }
         }
         stage('Build') {
