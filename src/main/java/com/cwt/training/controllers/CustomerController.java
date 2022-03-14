@@ -26,6 +26,7 @@ import com.cwt.training.dto.CustomerLocationOnlyDTO;
 import com.cwt.training.services.CustomerService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/customers")
@@ -46,7 +47,7 @@ public class CustomerController {
 		return ResponseEntity.ok(customerService.getAll());
 	}
 	
-	@Operation(summary = "Create a customer")
+	@Operation(summary = "Create a customer", security = @SecurityRequirement(name = "basicAuth"))
 	@PostMapping("/create")
 	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerCreateDTO dto) {		
 		return ResponseEntity

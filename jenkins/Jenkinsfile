@@ -1,11 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
-            steps {
-                bat 'mvn clean package'
-            }
-        }
+        
         stage('Test') {
             steps {
                 bat 'mvn test'
@@ -16,6 +12,27 @@ pipeline {
                 }
             }
         }
+        stage("build & SonarQube analysis") {
+            agent any
+            steps {
+              withSonarQubeEnv('sonar') {
+                sh 'mvn clean package sonar:sonar'
+              }
+            }
+          }
+          stage("Quality Gate") {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+          }
+        stage('Build') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
+        
         stage('Copy to documents') {
             steps {
                 bat 'copy %WORKSPACE%\\target\\*.jar C:\\Users\\collabera\\Documents'

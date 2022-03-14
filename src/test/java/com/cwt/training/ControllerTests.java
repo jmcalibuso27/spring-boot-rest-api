@@ -1,6 +1,7 @@
 package com.cwt.training;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -10,19 +11,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.cwt.training.controllers.CustomerController;
 import com.cwt.training.dto.CustomerCreateDTO;
 import com.cwt.training.dto.CustomerDTO;
 import com.cwt.training.exceptions.NotFoundException;
 import com.cwt.training.services.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest({CustomerController.class})
+@SpringBootTest
+@AutoConfigureMockMvc
+@WithMockUser(username="admin",roles={"ADMIN"})
 class ControllerTests {
 	
 	@Autowired
@@ -30,6 +35,24 @@ class ControllerTests {
 	
 	@MockBean
 	private CustomerService customerService;
+	
+	@WithAnonymousUser
+	@Test
+	@DisplayName("Get customer without authentication")
+	void controllerTestGetCustomerWithoutAuth() throws Exception {
+		CustomerDTO customerDTO = new CustomerDTO();
+		customerDTO.setFirstName("jon");
+		customerDTO.setLastName("snow");
+		customerDTO.setEmail("jon@mail.com");
+		customerDTO.setLocation("tokyo");
+		customerDTO.setId(1);
+		
+		Mockito.when(customerService.findCustomerById(1)).thenReturn(customerDTO);
+		
+		mockMvc.perform(get("/customers/1"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.firstName").value(customerDTO.getFirstName()));
+	}
 	
 	@Test
 	@DisplayName("Test create customer")
@@ -107,6 +130,7 @@ class ControllerTests {
 		
 	}
 	
+	
 	@Test
 	@DisplayName("Test customer delete")
 	void controllerTestCustomerDelete() throws Exception {
@@ -114,6 +138,17 @@ class ControllerTests {
 		
 		mockMvc.perform(delete("/customers/1"))
 			.andExpect(status().isOk());
+		
+	}
+	
+	@WithAnonymousUser
+	@Test
+	@DisplayName("Test delete customer without authentication")
+	void controllerTestDeleteCustomerWithoutAuth() throws Exception {
+		Mockito.when(customerService.deleteCustomerById(1)).thenReturn(1);
+		
+		mockMvc.perform(delete("/customers/1"))
+			.andExpect(status().isUnauthorized());
 		
 	}
 	
